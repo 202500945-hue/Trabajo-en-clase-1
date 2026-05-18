@@ -1,4 +1,4 @@
-import { pool } from "../db.js"
+import { pool } from "../db.js";
 
 export const getAllproductos = async (req, res) => {
     const data = await pool.query("SELECT id_producto, descripcion, precio FROM public.productos;")
@@ -23,5 +23,29 @@ export const getAllproductos = async (req, res) => {
     } catch (error) {
     console.log (error)
     res.json({res:"EL PRODUCTO NO HA SIDO CREADO"})     
-   }  
- }
+   } 
+   }
+
+   export const updateProducto = async (req, res) => {
+    try {
+        const { id } = req.params;
+        const { descripcion, precio } = req.body;
+        await pool.query("UPDATE public.productos SET descripcion = $1, precio = $2 WHERE id_producto = $3;", [descripcion, precio, id]);
+        res.json({ res: "PRODUCTO ACTUALIZADO DE MANERA CORRECTA" });
+    } catch (error) {
+        console.log(error);
+        res.json({ res: "EL PRODUCTO NO HA SIDO ACTUALIZADO" });
+    }
+};
+
+export const deleteProducto = async (req, res) => {
+    try {
+        const { id } = req.params;
+        await pool.query("DELETE FROM public.productos WHERE id_producto = $1;", [id]);
+        res.json({ res: "PRODUCTO ELIMINADO DE MANERA CORRECTA" });
+    } catch (error) {
+        console.log(error);
+        res.json({ res: "EL PRODUCTO NO HA SIDO ELIMINADO" });
+    }
+};
+ 
